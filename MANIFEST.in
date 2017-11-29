@@ -1,0 +1,6 @@
+graft indico_checkin_webhook/static
+graft indico_checkin_webhook/templates
+graft indico_checkin_webhook/translations
+graft indico_checkin_webhook/migrations
+
+global-exclude *.pyc __pycache__ .keep

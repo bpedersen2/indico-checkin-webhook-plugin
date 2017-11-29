@@ -1,16 +1,17 @@
 # indico-checkin-webhook-plugin
 
 Indico checkin webhook plugin
-+++++++++++++++++++++++++++++
+=============================
 
 This plugin plugin listens for the `registration_checkin_updated`` signal and sends data plus possibly a 
 ticket/badge pdf to a listening webhook. 
 
 The data POSTed to the webhook are either multipart form-encoded data
-    with the selected ticket template in files[file] and the registration 
-    data json-encoded in form[data] or the json-encoded registration data.
+with the selected ticket template in files[file] and the registration 
+data json-encoded in form[data] or the json-encoded registration data.
  
- Data layout: 
+Data layout:
+-----------
 
     {u'amount_paid': 0,
 	    u'checked_in': True,

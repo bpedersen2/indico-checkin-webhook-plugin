@@ -1,5 +1,3 @@
-# indico-checkin-webhook-plugin
-
 Indico checkin webhook plugin
 =============================
 

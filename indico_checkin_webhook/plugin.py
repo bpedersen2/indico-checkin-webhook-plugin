@@ -17,7 +17,7 @@
 from __future__ import unicode_literals
 
 import requests
-from flask import json, session
+from flask import json, session, request
 from sqlalchemy.orm import joinedload
 
 from indico.core import signals
@@ -25,6 +25,7 @@ from indico.core import signals
 from indico.core.logger import Logger
 from indico.core.plugins import IndicoPlugin, url_for_plugin
 from indico.web.menu import SideMenuItem
+#from indico.modules.events.api import SerializerBase
 from indico.modules.events.features.util import is_feature_enabled
 from indico.modules.events.registration.badges import RegistrantsListToBadgesPDF, RegistrantsListToBadgesPDFFoldable
 from indico.modules.events.registration.util import build_registration_api_data, get_event_section_data
@@ -86,11 +87,11 @@ class CheckinWebhookPlugin(IndicoPlugin):
 
     def _send_json(self, registration):
         try:
-            data = self.build_registration_data(registration)
+            data = self.build_data(registration)
+
             requests.post(
-                self._wh_url(registration.event), data=json.dumps(data), headers={
-                    'Content-Type': 'application/json'
-                })
+                self._wh_url(registration.event), data=json.dumps(data),
+                            headers={'Content-Type': 'application/json'})
         except Exception as e:
             logger.warn(_('Could not send data (%s)'), e)
 
@@ -106,13 +107,73 @@ class CheckinWebhookPlugin(IndicoPlugin):
             data['data_by_name']['{}_{}'.format(fieldparent, fieldname)] = item.friendly_data
         return data
 
+    def build_admin_data(self):
+	admin_data = {'user': session.user.name,
+		      'userid': session.user.id,
+                     }
+	return admin_data	
+
+    def build_event_data(self, reg):
+	event = reg.event
+	data_attrs= [
+             'additional_info',
+	     'address',
+             'contact_emails',
+             'contact_phones',
+             'contact_title',
+             'description',
+             'duration',
+             'end_dt',
+             'end_dt_display',
+             'end_dt_local',
+             'end_dt_override',
+             'external_url',
+             'id',
+             'keywords',
+             'logo_url',
+             'note',
+             'organizer_info',
+             'own_address',
+             'own_no_access_contact',
+             'own_room',
+             'own_room_id',
+             'own_room_name',
+             'own_venue',
+             'own_venue_id',
+             'own_venue_name',
+             'series',
+             'short_external_url',
+             'short_url',
+             'start_dt',
+             'start_dt_display',
+             'start_dt_local',
+             'start_dt_override',
+             'timezone',
+             'title',
+             'type',
+             'tzinfo',
+             'url',
+             'url_shortcut',
+             'venue',
+             'venue_name',
+        ]
+
+        data = { attr: str(getattr(event,attr)) for attr in data_attrs}
+	return data    
+
+
+    def build_data(self, reg):
+	return dict(data=self.build_registration_data(reg),
+                    event_data=self.build_event_data(reg),
+		    admin_data=self.build_admin_data())
+
     def _send_pdf(self, registration):
         try:
 
             fname = 'print-' + str(registration.id) + '.pdf'
             pdf = generate_ticket(registration)
             files = {'file': (fname, pdf, 'application/pdf', {'Expires': '0'})}
-            data = self.build_registration_data(registration)
+            data = self.build_data(registration)
             requests.post(self._wh_url(registration.event), data={'data': json.dumps(data)}, files=files)
         except Exception as e:
             logger.warn(_('Could not print the checkin badge (%s)'), e)
@@ -150,14 +211,14 @@ def generate_ticket(registration):
        template resolution
     """
 
-    from indico.modules.designer.util import get_default_template_on_category
+    from indico.modules.designer.util import get_default_ticket_on_category
     from indico.modules.events.registration.controllers.management.tickets import DEFAULT_TICKET_PRINTING_SETTINGS
     # default is A4
 
     template = checkin_webhook_event_settings.get(registration.event, 'ticket_template')
     if not template:
         template = (registration.registration_form.ticket_template
-                    or get_default_template_on_category(registration.event.category))
+                    or get_default_ticket_on_category(registration.event.category))
 
     signals.event.designer.print_badge_template.send(template, regform=registration.registration_form)
     pdf_class = RegistrantsListToBadgesPDFFoldable if template.backside_template else RegistrantsListToBadgesPDF

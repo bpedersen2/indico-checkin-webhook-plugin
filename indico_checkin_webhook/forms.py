@@ -20,7 +20,7 @@ from wtforms.validators import DataRequired
 
 from indico.web.forms.base import IndicoForm
 from indico.modules.designer import TemplateType
-from indico.modules.designer.util import get_default_template_on_category, get_inherited_templates
+from indico.modules.designer.util import get_default_ticket_on_category, get_inherited_templates
 from indico.web.forms.widgets import SwitchWidget
 
 from indico_checkin_webhook import _
@@ -38,7 +38,7 @@ class EventSettingsForm(IndicoForm):
     def __init__(self, *args, **kwargs):
         event = kwargs.pop('event')
         super(EventSettingsForm, self).__init__(*args, **kwargs)
-        default_tpl = get_default_template_on_category(event.category)
+        default_tpl = get_default_ticket_on_category(event.category)
         all_templates = set(event.designer_templates) | get_inherited_templates(event)
         badge_templates = [(tpl.id, tpl.title) for tpl in all_templates
                            if tpl.type == TemplateType.badge and tpl != default_tpl]

@@ -14,8 +14,7 @@
 # You should have received a copy of the GNU General Public License
 # along with Indico; if not, see <http://www.gnu.org/licenses/>.
 
-from wtforms.fields import BooleanField, SelectField
-from wtforms.fields.html5 import URLField
+from wtforms.fields import BooleanField, SelectField, URLField
 from wtforms.validators import DataRequired
 
 from indico.web.forms.base import IndicoForm

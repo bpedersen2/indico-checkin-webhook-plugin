@@ -20,7 +20,7 @@ from setuptools import find_packages, setup
 
 setup(
     name='indico-plugin-checkin-webhook',
-    version='0.1',
+    version='0.2',
     description='Print plugin that triggers a webhook on checkin',
     url='https://github.com/',
     license='https://www.gnu.org/licenses/gpl-3.0.txt',
@@ -30,7 +30,7 @@ setup(
     zip_safe=False,
     include_package_data=True,
     install_requires=[
-        'indico>=2.1-dev',
+        'indico>=3.1',
     ],
     classifiers=[
         'Environment :: Plugins', 'Environment :: Web Environment',

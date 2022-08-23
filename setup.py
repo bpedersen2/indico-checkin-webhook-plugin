@@ -36,7 +36,7 @@ setup(
     classifiers=[
         'Environment :: Plugins', 'Environment :: Web Environment',
         'License :: OSI Approved :: GNU General Public License v3 or later (GPLv3+)',
-        'Programming Language :: Python :: 2.7'
+        'Programming Language :: Python :: 3.9'
     ],
     entry_points={
         'indico.plugins': {'checkin_webhook = indico_checkin_webhook.plugin:CheckinWebhookPlugin'}

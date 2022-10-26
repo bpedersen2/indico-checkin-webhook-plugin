@@ -32,10 +32,9 @@ class RHCheckinWebhookManageEvent(RHManageEventBase):
     EVENT_FEATURE = 'checkin_webhook'
 
     def _process(self):
-        form = EventSettingsForm(
-            prefix='checkin_webhook-',
-            event=self.event,
-            obj=FormDefaults(**checkin_webhook_event_settings.get_all(self.event)))
+        form = EventSettingsForm(prefix='checkin_webhook-',
+                                 event=self.event,
+                                 obj=FormDefaults(**checkin_webhook_event_settings.get_all(self.event)))
         if form.validate_on_submit():
 
             checkin_webhook_event_settings.set_multi(self.event, form.data)

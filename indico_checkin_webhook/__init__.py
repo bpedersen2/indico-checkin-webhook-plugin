@@ -44,7 +44,7 @@ class CheckinWebhookFeature(EventFeature):
     description = _('Gives event managers the opportunity to trigger a webhook on checkin.')
 
     @classmethod
-    def enabled(cls, event):
+    def enabled(cls, event, state):
         for setting in (
                 'webhookurl',
                 'ticket_template_id',

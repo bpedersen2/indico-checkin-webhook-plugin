@@ -18,26 +18,23 @@ from __future__ import unicode_literals
 
 from setuptools import find_packages, setup
 
-setup(
-    name='indico-plugin-checkin-webhook',
-    description='Print plugin that triggers a webhook on checkin',
-    url='https://github.com/',
-    license='https://www.gnu.org/licenses/gpl-3.0.txt',
-    author='Indico Team',
-    author_email='bjoern.pedersen@frm2.tum.de',
-    packages=find_packages(),
-    zip_safe=False,
-    include_package_data=True,
-    use_scm_version=True,
-    setup_requires=['setuptools_scm'],
-    install_requires=[
-        'indico>=3.1',
-    ],
-    classifiers=[
-        'Environment :: Plugins', 'Environment :: Web Environment',
-        'License :: OSI Approved :: GNU General Public License v3 or later (GPLv3+)',
-        'Programming Language :: Python :: 3.9'
-    ],
-    entry_points={
-        'indico.plugins': {'checkin_webhook = indico_checkin_webhook.plugin:CheckinWebhookPlugin'}
-    })
+setup(name='indico-plugin-checkin-webhook',
+      description='Print plugin that triggers a webhook on checkin',
+      url='https://github.com/',
+      license='https://www.gnu.org/licenses/gpl-3.0.txt',
+      author='Indico Team',
+      author_email='bjoern.pedersen@frm2.tum.de',
+      packages=find_packages(),
+      zip_safe=False,
+      include_package_data=True,
+      use_scm_version=True,
+      setup_requires=['setuptools_scm'],
+      install_requires=[
+          'indico>=3.1',
+      ],
+      classifiers=[
+          'Environment :: Plugins', 'Environment :: Web Environment',
+          'License :: OSI Approved :: GNU General Public License v3 or later (GPLv3+)',
+          'Programming Language :: Python :: 3.9'
+      ],
+      entry_points={'indico.plugins': {'checkin_webhook = indico_checkin_webhook.plugin:CheckinWebhookPlugin'}})

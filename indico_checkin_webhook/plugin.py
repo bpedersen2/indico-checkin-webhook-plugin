@@ -28,7 +28,7 @@ from indico.web.menu import SideMenuItem
 #from indico.modules.events.api import SerializerBase
 from indico.modules.events.features.util import is_feature_enabled
 from indico.modules.events.registration.badges import RegistrantsListToBadgesPDF, RegistrantsListToBadgesPDFFoldable
-from indico.modules.events.registration.util import build_registration_api_data, get_event_section_data
+from indico.modules.events.registration.util import build_registration_api_data
 from indico.util.string import slugify
 
 from indico_checkin_webhook import _, checkin_webhook_event_settings
@@ -89,9 +89,9 @@ class CheckinWebhookPlugin(IndicoPlugin):
         try:
             data = self.build_data(registration)
 
-            requests.post(
-                self._wh_url(registration.event), data=json.dumps(data),
-                            headers={'Content-Type': 'application/json'})
+            requests.post(self._wh_url(registration.event),
+                          data=json.dumps(data),
+                          headers={'Content-Type': 'application/json'})
         except Exception as e:
             logger.warn(_('Could not send data (%s)'), e)
 
@@ -108,64 +108,64 @@ class CheckinWebhookPlugin(IndicoPlugin):
         return data
 
     def build_admin_data(self):
-	admin_data = {'user': session.user.name,
-		      'userid': session.user.id,
-                     }
-	return admin_data	
+        admin_data = {
+            'user': session.user.name,
+            'userid': session.user.id,
+        }
+        return admin_data
 
     def build_event_data(self, reg):
-	event = reg.event
-	data_attrs= [
-             'additional_info',
-	     'address',
-             'contact_emails',
-             'contact_phones',
-             'contact_title',
-             'description',
-             'duration',
-             'end_dt',
-             'end_dt_display',
-             'end_dt_local',
-             'end_dt_override',
-             'external_url',
-             'id',
-             'keywords',
-             'logo_url',
-             'note',
-             'organizer_info',
-             'own_address',
-             'own_no_access_contact',
-             'own_room',
-             'own_room_id',
-             'own_room_name',
-             'own_venue',
-             'own_venue_id',
-             'own_venue_name',
-             'series',
-             'short_external_url',
-             'short_url',
-             'start_dt',
-             'start_dt_display',
-             'start_dt_local',
-             'start_dt_override',
-             'timezone',
-             'title',
-             'type',
-             'tzinfo',
-             'url',
-             'url_shortcut',
-             'venue',
-             'venue_name',
+        event = reg.event
+        data_attrs = [
+            'additional_info',
+            'address',
+            'contact_emails',
+            'contact_phones',
+            'contact_title',
+            'description',
+            'duration',
+            'end_dt',
+            'end_dt_display',
+            'end_dt_local',
+            'end_dt_override',
+            'external_url',
+            'id',
+            'keywords',
+            'logo_url',
+            'note',
+            'organizer_info',
+            'own_address',
+            'own_no_access_contact',
+            'own_room',
+            'own_room_id',
+            'own_room_name',
+            'own_venue',
+            'own_venue_id',
+            'own_venue_name',
+            'series',
+            'short_external_url',
+            'short_url',
+            'start_dt',
+            'start_dt_display',
+            'start_dt_local',
+            'start_dt_override',
+            'timezone',
+            'title',
+            'type',
+            'tzinfo',
+            'url',
+            'url_shortcut',
+            'venue',
+            'venue_name',
         ]
 
-        data = { attr: str(getattr(event,attr)) for attr in data_attrs}
-	return data    
-
+        data = {attr: str(getattr(event, attr)) for attr in data_attrs}
+        return data
 
     def build_data(self, reg):
-	return dict(data=self.build_registration_data(reg),
+        return dict(data=self.build_registration_data(reg),
                     event_data=self.build_event_data(reg),
-		    admin_data=self.build_admin_data())
+                    admin_data=self.build_admin_data())
 
     def _send_pdf(self, registration):
         try:
@@ -195,11 +195,10 @@ class CheckinWebhookPlugin(IndicoPlugin):
 
     def extend_event_management_menu(self, sender, event, **kwargs):
         if event.can_manage(session.user):
-            return SideMenuItem(
-                'CheckinWebhook',
-                _('Checkin Webhook'),
-                url_for_plugin('checkin_webhook.configure', event),
-                section='services')
+            return SideMenuItem('CheckinWebhook',
+                                _('Checkin Webhook'),
+                                url_for_plugin('checkin_webhook.configure', event),
+                                section='services')
 
     def get_event_management_url(self, event, **kwargs):
         if event.can_manage(session.user):
